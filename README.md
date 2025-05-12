@@ -9,7 +9,7 @@ A medium inspired Jekyll blog theme. The basic idea came from the Ghost theme
 
 * Install `ruby3.0-dev`
 * Install the required gems: `bundle install`
-* Run the jekyll server: `bundle exec jekyll serve`
+* Run the jekyll server: `bundle exec jekyll serve --livereload`
 
 You should have a server up and running locally at <http://localhost:4000>.
 
