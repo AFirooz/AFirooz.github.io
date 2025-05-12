@@ -1,7 +1,7 @@
 # Mediator
 
-A medium inspired Jekyll blog theme. The basic idea came from the Ghost theme
-[Readium 2.0](http://www.svenread.com/readium-ghost-theme/). I use mediator on my own blog [The Base](http://blog.base68.com).
+A medium inspired Jekyll blog [theme](https://github.com/dirkfabisch/mediator). The basic idea came from the Ghost theme
+[Readium 2.0](http://www.svenread.com/readium-ghost-theme/).
 
 * Use header images in articles, if you want to (add tag "image" and url to the image in the front matter section of a post)
 
