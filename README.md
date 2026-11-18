@@ -14,8 +14,9 @@ Wrap text in `**double asterisks**` to bold it.
 | Text, links, email, section content    | `src/data/resume.ts`               |
 | Section order and markup               | `src/pages/index.astro`            |
 | Colors, fonts, layout, print styles    | `src/styles/global.css`            |
-| `<head>`, SEO tags, JSON-LD, theme JS  | `src/layouts/Base.astro`           |
-| Portrait and logo                      | `src/assets/`                      |
+| `<head>`, SEO tags, JSON-LD            | `src/layouts/Base.astro`           |
+| Interactions and the terminal          | `src/scripts/`                     |
+| Avatar, original portrait, logo        | `src/assets/`                      |
 | Favicon, social card, robots, sitemap  | `public/`                          |
 | Plain-text resume for LLM crawlers     | `src/pages/llms.txt.ts`            |
 
@@ -37,7 +38,15 @@ The repository's Pages source must be set to **GitHub Actions** (Settings → Pa
 
 ## Features
 
+- Hero with a typed "I build ..." rotator, animated circuit traces, and a scrolling tech strip
+- Resume terminal (button bottom right, or Cmd/Ctrl+K): named commands plus keyword search over the resume, all client-side (`src/scripts/terminal.ts`)
+- Count-up stats, scroll progress bar, active-section nav, cursor spotlight on cards, tabs, copy-email button (`src/scripts/site.ts`)
 - Light and dark themes (follows the system, toggle remembers the choice)
 - Print stylesheet: the "Save as PDF" button prints the page as a paper resume
-- Responsive portrait images, self-hosted fonts
+- Everything animated respects `prefers-reduced-motion`, and the page reads fine with JavaScript off
 - `Person` JSON-LD, Open Graph card, `sitemap.xml`, `robots.txt`, `llms.txt`
+
+## Profile picture
+
+`src/assets/avatar.png` is `src/assets/portrait.jpg` with the background removed (macOS Vision subject mask) and
+replaced by the logo gradient. To use a different photo, replace `avatar.png` with any square image.

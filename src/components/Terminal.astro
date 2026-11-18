@@ -1,0 +1,45 @@
+---
+import Icon from './Icon.astro';
+
+const chips = ['help', 'about', 'experience', 'skills', 'projects', 'contact'];
+---
+
+<button class="term-fab" type="button" data-term-open aria-haspopup="dialog" aria-controls="terminal">
+  <Icon name="terminal" />
+  <span>Query my resume</span>
+  <kbd data-term-kbd>⌘K</kbd>
+</button>
+
+<div class="term" id="terminal" role="dialog" aria-label="Resume terminal" hidden>
+  <div class="term-bar">
+    <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="term-title mono">visitor@afirooz: ~/resume</span>
+    <button class="term-close" type="button" data-term-close aria-label="Close terminal"><Icon name="close" /></button>
+  </div>
+  <div class="term-out mono" data-term-out aria-live="polite"></div>
+  <div class="term-chips">
+    {
+      chips.map((c) => (
+        <button type="button" class="mono" data-term-run={c}>
+          {c}
+        </button>
+      ))
+    }
+  </div>
+  <form class="term-form mono" data-term-form>
+    <label for="term-input" aria-label="Command">❯</label>
+    <input
+      id="term-input"
+      type="text"
+      autocomplete="off"
+      autocapitalize="off"
+      autocorrect="off"
+      spellcheck="false"
+      placeholder="command or keyword, e.g. azure"
+    />
+  </form>
+</div>
+
+<script>
+  import '../scripts/terminal';
+</script>

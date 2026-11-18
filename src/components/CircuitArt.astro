@@ -1,5 +1,12 @@
 ---
-// Decorative circuit traces echoing the AF logo. Each trace ends in a node.
+// Decorative circuit traces echoing the AF logo. Each trace ends in a node,
+// and a signal pulse travels along it (hidden when reduced motion is on).
+interface Props {
+  // Gradient ids must be unique per instance on the page.
+  id: string;
+}
+
+const { id } = Astro.props;
 const traces = [
   { d: 'M820 36 H690 L666 60 H520 L486 94 H350', node: [350, 94] },
   { d: 'M820 92 H640 L596 136 H470', node: [470, 136] },
@@ -18,19 +25,38 @@ const traces = [
 
 <svg viewBox="0 0 820 600" preserveAspectRatio="xMaxYMin slice" aria-hidden="true" fill="none">
   <defs>
-    <linearGradient id="circuit-grad" x1="0" y1="0" x2="820" y2="600" gradientUnits="userSpaceOnUse">
+    <linearGradient id={id} x1="0" y1="0" x2="820" y2="600" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="var(--g1)"></stop>
       <stop offset="0.55" stop-color="var(--g2)"></stop>
       <stop offset="1" stop-color="var(--g3)"></stop>
     </linearGradient>
   </defs>
-  <g stroke="url(#circuit-grad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+  <g stroke={`url(#${id})`} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
     {
-      traces.map((t) => (
+      traces.map((t, i) => (
         <>
           <path d={t.d} />
           <circle cx={t.node[0]} cy={t.node[1]} r="5" fill="var(--bg)" />
-          <circle cx={t.node[0]} cy={t.node[1]} r="1.5" fill="url(#circuit-grad)" stroke="none" />
+          <circle cx={t.node[0]} cy={t.node[1]} r="1.5" fill={`url(#${id})`} stroke="none" />
+          <circle class="pulse" r="2.6" fill="var(--g1)" stroke="none" opacity="0">
+            <animateMotion
+              path={t.d}
+              dur={`${3.2 + (i % 4) * 0.7}s`}
+              begin={`${(i * 0.9) % 5}s`}
+              repeatCount="indefinite"
+              keyPoints="0;1;1"
+              keyTimes="0;0.6;1"
+              calcMode="linear"
+            />
+            <animate
+              attributeName="opacity"
+              values="0;1;1;0;0"
+              keyTimes="0;0.08;0.52;0.6;1"
+              dur={`${3.2 + (i % 4) * 0.7}s`}
+              begin={`${(i * 0.9) % 5}s`}
+              repeatCount="indefinite"
+            />
+          </circle>
         </>
       ))
     }

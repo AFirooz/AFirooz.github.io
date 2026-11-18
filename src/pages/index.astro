@@ -4,12 +4,14 @@ import Base from '../layouts/Base.astro';
 import Section from '../components/Section.astro';
 import Icon from '../components/Icon.astro';
 import CircuitArt from '../components/CircuitArt.astro';
+import Terminal from '../components/Terminal.astro';
 import logo from '../assets/af-logo.png';
-import portrait from '../assets/portrait.jpg';
+import avatar from '../assets/avatar.png';
 import {
   profile,
   summary,
   stats,
+  stack,
   experience,
   projects,
   skills,
@@ -22,15 +24,18 @@ import {
 import { fmt } from '../lib/fmt';
 
 const nav = [
+  { href: '#about', label: 'About' },
   { href: '#experience', label: 'Experience' },
   { href: '#projects', label: 'Projects' },
   { href: '#skills', label: 'Skills' },
   { href: '#education', label: 'Education' },
   { href: '#publications', label: 'Publications' },
-  { href: '#contact', label: 'Contact', keep: true },
+  { href: '#contact', label: 'Contact' },
 ];
 const mailto = `mailto:${profile.email}`;
 const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
+const current = experience[0];
+const headline = `Hi, I'm ${profile.name}. I build ${profile.builds.join(', ')}.`;
 ---
 
 <Base>
@@ -41,25 +46,61 @@ const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
         <span>{profile.name}</span>
       </a>
       <nav class="nav" aria-label="Sections">
-        {nav.map((item) => <a href={item.href} class:list={{ 'nav-keep': item.keep }}>{item.label}</a>)}
+        {nav.map((item) => <a href={item.href}>{item.label}</a>)}
       </nav>
-      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
+      <button class="header-btn term-trigger" type="button" data-term-open aria-label="Open the resume terminal">
+        <Icon name="terminal" />
+        <kbd data-term-kbd>⌘K</kbd>
+      </button>
+      <button class="header-btn" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
         <Icon name="sun" class="sun" />
         <Icon name="moon" class="moon" />
       </button>
     </div>
+    <div class="progress" data-progress aria-hidden="true"></div>
   </header>
 
   <main id="main">
     <div class="hero" id="top">
+      <div class="hero-dots"></div>
       <div class="hero-glow"></div>
-      <div class="hero-art"><CircuitArt /></div>
-      <div class="hero-grid wrap">
-        <div>
-          <p class="eyebrow mono">{profile.role} · {profile.focus}</p>
-          <h1>{profile.name}</h1>
+      <div class="hero-art hero-art-r"><CircuitArt id="circuit-r" /></div>
+      <div class="hero-art hero-art-l"><CircuitArt id="circuit-l" /></div>
+
+      <div class="wrap hero-inner">
+        <div class="avatar">
+          <div class="avatar-ring"></div>
+          <Image
+            src={avatar}
+            alt={`Portrait of ${profile.name}`}
+            width={440}
+            widths={[220, 440]}
+            sizes="(max-width: 760px) 120px, 220px"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+
+        <div class="hero-copy">
+          <div class="print-only">
+            <p class="print-name">{profile.name}</p>
+            <p class="print-role">{profile.role} · {profile.focus}</p>
+          </div>
+          <h1 aria-label={headline}>
+            <span class="hello" aria-hidden="true">Hi, I’m <strong>{profile.name}</strong>.</span>
+            <span class="headline" aria-hidden="true">
+              I build
+              <span class="rotator" data-rotator={JSON.stringify(profile.builds)}>
+                <span class="grad-text" data-rotator-text>{profile.builds[0]}</span><span class="caret"></span>
+              </span>
+            </span>
+          </h1>
           <p class="hero-tagline" set:html={fmt(profile.tagline)} />
-          <div class="hero-actions">
+          <a class="now" href="#experience">
+            <i class="dot"></i>
+            <span>{current.role} <span class="muted">at</span> {current.company}</span>
+          </a>
+          <div class="actions">
             <a class="btn btn-primary" href={mailto}><Icon name="mail" />Get in touch</a>
             <a class="btn" href={profile.github} rel="me noopener"><Icon name="github" />GitHub</a>
             <a class="btn" href={profile.linkedin} rel="me noopener"><Icon name="linkedin" />LinkedIn</a>
@@ -67,60 +108,83 @@ const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
           </div>
           <div class="hero-meta">
             <span><Icon name="pin" />{profile.location}</span>
-            <span><i class="dot"></i>{profile.availability}</span>
+            <span>{profile.availability}</span>
             <span>{profile.degrees}</span>
           </div>
           <p class="print-only hero-meta">
             {profile.email} · {short(profile.site)} · {short(profile.github)} · {short(profile.linkedin)}
           </p>
         </div>
-        <div class="portrait">
-          <Image
-            src={portrait}
-            alt={`Portrait of ${profile.name}`}
-            width={600}
-            widths={[300, 600]}
-            sizes="(max-width: 760px) 128px, 300px"
-            loading="eager"
-            fetchpriority="high"
-          />
-        </div>
+      </div>
+
+      <div class="marquee" aria-label="Technologies I work with">
+        <ul class="marquee-track">
+          {stack.map((s) => <li>{s}</li>)}
+          {stack.map((s) => <li aria-hidden="true">{s}</li>)}
+        </ul>
       </div>
     </div>
 
     <div class="wrap">
-      <Section id="profile" index="01" title="Profile">
-        <div class="prose">
-          {summary.map((p) => <p set:html={fmt(p)} />)}
+      <Section id="about" icon="user" title="About">
+        <div class="about">
+          <div class="prose reveal">
+            {summary.map((p) => <p set:html={fmt(p)} />)}
+          </div>
+          <ul class="stats">
+            {
+              stats.map((s) => (
+                <li class="stat spot reveal">
+                  <div
+                    class="stat-value grad-text"
+                    data-count={s.num}
+                    data-decimals={s.decimals}
+                    data-suffix={s.suffix}
+                  >
+                    {s.num.toFixed(s.decimals)}
+                    {s.suffix}
+                  </div>
+                  <div class="stat-label">{s.label}</div>
+                </li>
+              ))
+            }
+          </ul>
         </div>
-        <ul class="stats">
-          {
-            stats.map((s) => (
-              <li class="stat">
-                <div class="stat-value grad-text">{s.value}</div>
-                <div class="stat-label">{s.label}</div>
-              </li>
-            ))
-          }
-        </ul>
       </Section>
 
-      <Section id="experience" index="02" title="Experience">
-        <div class="timeline">
+      <Section id="experience" icon="briefcase" title="Experience">
+        <div class="stack-list">
           {
-            experience.map((job) => (
-              <article class="entry">
-                <div class="entry-top">
-                  <h3>{job.role}</h3>
-                  <span class="entry-dates mono">
-                    {job.start} – {job.end}
+            experience.map((job, i) => (
+              <article class="xp card spot reveal">
+                <header class="xp-head">
+                  <span class="mark" aria-hidden="true">
+                    {job.mark}
                   </span>
+                  <div class="xp-title">
+                    <h3>{job.company}</h3>
+                    <p class="xp-role">{job.role}</p>
+                    <p class="xp-meta mono">
+                      {job.start} – {job.end} · {[job.location, job.note].filter(Boolean).join(' · ')}
+                    </p>
+                  </div>
+                  {i === 0 && <span class="badge">Current</span>}
+                </header>
+                <div class="xp-body">
+                  <ul class="bullets">
+                    {job.bullets.map((b) => <li set:html={fmt(b)} />)}
+                  </ul>
+                  <ul class="highlights">
+                    {
+                      job.highlights.map((h) => (
+                        <li>
+                          <b>{h.value}</b>
+                          <span>{h.label}</span>
+                        </li>
+                      ))
+                    }
+                  </ul>
                 </div>
-                <p class="entry-org">{job.company}</p>
-                <p class="entry-loc">{[job.location, job.note].filter(Boolean).join(' · ')}</p>
-                <ul class="bullets">
-                  {job.bullets.map((b) => <li set:html={fmt(b)} />)}
-                </ul>
                 <ul class="tags" aria-label="Technologies">
                   {job.tags.map((t) => <li class="tag">{t}</li>)}
                 </ul>
@@ -130,11 +194,14 @@ const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
         </div>
       </Section>
 
-      <Section id="projects" index="03" title="Selected projects">
+      <Section id="projects" icon="layers" title="Selected projects">
         <div class="cards">
           {
             projects.map((p) => (
-              <article class="card">
+              <article class="card project spot reveal">
+                <span class="icon-tile sm">
+                  <Icon name={p.icon} />
+                </span>
                 <h3>{p.title}</h3>
                 <p set:html={fmt(p.description)} />
                 <ul class="tags" aria-label="Technologies">
@@ -146,30 +213,31 @@ const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
         </div>
       </Section>
 
-      <Section id="skills" index="04" title="Skills">
-        <dl class="skills">
+      <Section id="skills" icon="cpu" title="Skills">
+        <div class="skill-grid">
           {
             skills.map((s) => (
-              <div class="skill-row">
-                <dt>{s.group}</dt>
-                <dd>
-                  <ul class="tags">
-                    {s.items.map((i) => <li class="tag">{i}</li>)}
-                    {s.familiar && <li class="familiar-label">Familiar:</li>}
-                    {s.familiar?.map((i) => <li class="tag is-familiar">{i}</li>)}
-                  </ul>
-                </dd>
-              </div>
+              <article class="card skill spot reveal">
+                <h3>
+                  <Icon name={s.icon} />
+                  {s.group}
+                </h3>
+                <ul class="tags">
+                  {s.items.map((i) => <li class="tag">{i}</li>)}
+                  {s.familiar && <li class="familiar-label">Familiar:</li>}
+                  {s.familiar?.map((i) => <li class="tag is-familiar">{i}</li>)}
+                </ul>
+              </article>
             ))
           }
-        </dl>
+        </div>
       </Section>
 
-      <Section id="education" index="05" title="Education">
+      <Section id="education" icon="cap" title="Education">
         <div class="timeline">
           {
             education.map((e) => (
-              <article class="entry">
+              <article class="entry reveal">
                 <div class="entry-top">
                   <h3>{e.degree}</h3>
                   <span class="entry-dates mono">
@@ -185,11 +253,11 @@ const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
         </div>
       </Section>
 
-      <Section id="publications" index="06" title="Publications">
+      <Section id="publications" icon="book" title="Publications">
         <ol class="pubs">
           {
             publications.map((p) => (
-              <li class="pub">
+              <li class="pub reveal">
                 <p class="pub-title">{p.title}</p>
                 <p class="pub-meta">
                   <span set:html={fmt(p.authors)} /> <em>{p.venue}</em>, {p.year}.
@@ -205,60 +273,84 @@ const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
         </ol>
       </Section>
 
-      <Section id="recognition" index="07" title="Honors & certificates">
-        <h3 class="subhead">Honors & awards</h3>
-        <ul class="rows">
-          {
-            honors.map((h) => (
-              <li>
-                <span class="row-title">{h.title}</span>
-                <span class="row-sub">{h.issuer}</span>
-                <span class="row-year mono">{h.year}</span>
-              </li>
-            ))
-          }
-        </ul>
-        <h3 class="subhead">Certificates</h3>
-        <ul class="rows">
-          {
-            certificates.map((c) => (
-              <li>
-                <span class="row-title">
-                  <a href={c.url} rel="noopener" title="Verify certificate">
-                    {c.title}
-                    <Icon name="arrow" />
-                  </a>
-                </span>
-                <span class="row-sub">{c.issuer}</span>
-                <span class="row-year mono">{c.year}</span>
-              </li>
-            ))
-          }
-        </ul>
+      <Section id="recognition" icon="award" title="Recognition">
+        <div class="tabs reveal" data-tabs>
+          <div class="tablist" role="tablist" aria-label="Recognition">
+            <button type="button" role="tab" id="tab-certs" aria-controls="panel-certs" aria-selected="true">
+              Certificates <span class="count">{certificates.length}</span>
+            </button>
+            <button type="button" role="tab" id="tab-honors" aria-controls="panel-honors" aria-selected="false">
+              Honors & awards <span class="count">{honors.length}</span>
+            </button>
+            <button type="button" role="tab" id="tab-lead" aria-controls="panel-lead" aria-selected="false">
+              Leadership <span class="count">{leadership.length}</span>
+            </button>
+          </div>
+
+          <div class="tabpanel" role="tabpanel" id="panel-certs" aria-labelledby="tab-certs">
+            <h3 class="subhead">Certificates</h3>
+            <ul class="rows">
+              {
+                certificates.map((c) => (
+                  <li>
+                    <span class="row-title">
+                      <a href={c.url} rel="noopener" title="Verify certificate">
+                        {c.title}
+                        <Icon name="arrow" />
+                      </a>
+                    </span>
+                    <span class="row-sub">{c.issuer}</span>
+                    <span class="row-year mono">{c.year}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+
+          <div class="tabpanel" role="tabpanel" id="panel-honors" aria-labelledby="tab-honors">
+            <h3 class="subhead">Honors & awards</h3>
+            <ul class="rows">
+              {
+                honors.map((h) => (
+                  <li>
+                    <span class="row-title">{h.title}</span>
+                    <span class="row-sub">{h.issuer}</span>
+                    <span class="row-year mono">{h.year}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+
+          <div class="tabpanel" role="tabpanel" id="panel-lead" aria-labelledby="tab-lead">
+            <h3 class="subhead">Leadership & volunteering</h3>
+            <ul class="rows">
+              {
+                leadership.map((l) => (
+                  <li>
+                    <span class="row-text" set:html={fmt(l.text)} />
+                    <span class="row-year mono">{l.year}</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
       </Section>
 
-      <Section id="leadership" index="08" title="Leadership & volunteering">
-        <ul class="rows">
-          {
-            leadership.map((l) => (
-              <li>
-                <span class="row-text" set:html={fmt(l.text)} />
-                <span class="row-year mono">{l.year}</span>
-              </li>
-            ))
-          }
-        </ul>
-      </Section>
-
-      <section id="contact" class="contact reveal" aria-labelledby="contact-title">
+      <section id="contact" class="contact spot reveal" aria-labelledby="contact-title" data-spy>
         <h2 id="contact-title">Let’s <span class="grad-text">talk.</span></h2>
         <p>
           Email is the fastest way to reach me. I’m based in {profile.location} and {
             profile.availability.toLowerCase()
           }.
         </p>
-        <div class="hero-actions">
+        <div class="actions">
           <a class="btn btn-primary" href={mailto}><Icon name="mail" />{profile.email}</a>
+          <button class="btn" type="button" data-copy={profile.email}>
+            <Icon name="copy" class="i-copy" /><Icon name="check" class="i-check" />
+            <span data-copy-label>Copy email</span>
+          </button>
           <a class="btn" href={profile.linkedin} rel="me noopener"><Icon name="linkedin" />LinkedIn</a>
           <a class="btn" href={profile.github} rel="me noopener"><Icon name="github" />GitHub</a>
         </div>
@@ -272,4 +364,6 @@ const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
       <a href={profile.repo} rel="noopener">Source on GitHub</a>
     </div>
   </footer>
+
+  <Terminal />
 </Base>

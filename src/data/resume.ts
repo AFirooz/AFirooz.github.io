@@ -7,6 +7,14 @@ export const profile = {
   role: 'Software Engineer',
   focus: 'AI & Cloud Infra',
   degrees: 'Computer Science, MS · Chemical Engineering, MS',
+  // Rotating words after "I build" in the hero. Keep each under ~23 characters.
+  builds: [
+    'agentic AI workflows',
+    'deep learning models',
+    'clinical data pipelines',
+    'RAG & GraphRAG agents',
+    'observable cloud infra',
+  ],
   tagline:
     'Interdisciplinary scientist with proven expertise in **data science, ML, AI,** and **chemical engineering,** passionate about building solutions to make a positive dent in human lives.',
   location: 'State College, PA',
@@ -23,16 +31,46 @@ export const summary = [
   'Solid understanding of software engineering best practices including **clean code principles, CI/CD pipelines, cloud infrastructure, DevSecOps controls (SCA/SAST), observability,** and **agile methodologies** for scalable applications.',
 ];
 
+// num counts up on scroll; it renders as num.toFixed(decimals) + suffix.
 export const stats = [
-  { value: '6.9B+', label: 'mass spectrometry data points processed in parallel' },
-  { value: '93.5%', label: 'Dice score for aortic segmentation with TransONet' },
-  { value: '10K+', label: 'clinical records modeled in a SQL database' },
-  { value: '60+', label: 'defects auto-resolved by SCA/SAST pull request checks' },
+  { num: 6.9, decimals: 1, suffix: 'B+', label: 'mass spectrometry data points processed in parallel' },
+  { num: 93.5, decimals: 1, suffix: '%', label: 'Dice score for aortic segmentation with TransONet' },
+  { num: 10, decimals: 0, suffix: 'K+', label: 'clinical records modeled in a SQL database' },
+  { num: 60, decimals: 0, suffix: '+', label: 'defects auto-resolved by SCA/SAST pull request checks' },
+];
+
+// Scrolling strip under the hero. Every entry also appears in `skills` below.
+export const stack = [
+  'Python',
+  'PyTorch',
+  'LangGraph',
+  'LangChain',
+  'Azure',
+  'OpenTelemetry',
+  'Docker',
+  'GitHub Actions',
+  'Neo4j',
+  'MongoDB',
+  'SQL',
+  'Scikit-learn',
+  'XGBoost',
+  'Bicep',
+  'LangSmith',
+  'Google ADK',
+  'SHAP',
+  'Flask',
+  'Bash',
 ];
 
 export const experience = [
   {
     company: 'Just in Time GCP',
+    mark: 'JIT',
+    highlights: [
+      { value: '60+', label: 'defects auto-resolved' },
+      { value: '8K+', label: 'documents stress-tested' },
+      { value: '14K+', label: 'legacy lines removed' },
+    ],
     role: 'Software Engineer (AI & Cloud Infra)',
     start: 'Aug 2025',
     end: 'Present',
@@ -48,6 +86,12 @@ export const experience = [
   },
   {
     company: 'Prisma Health Cancer Institute & School of Medicine Greenville',
+    mark: 'PH',
+    highlights: [
+      { value: '10K+', label: 'clinical records' },
+      { value: '65', label: 'drug combinations classified' },
+      { value: '4', label: 'evaluation metrics' },
+    ],
     role: 'Data Scientist',
     start: 'Jul 2022',
     end: 'Dec 2024',
@@ -63,6 +107,12 @@ export const experience = [
   },
   {
     company: 'University of South Carolina',
+    mark: 'USC',
+    highlights: [
+      { value: '6.9B+', label: 'data points processed' },
+      { value: '78', label: 'raw instrument files' },
+      { value: '93.5%', label: 'Dice score' },
+    ],
     role: 'Graduate Research Assistant',
     start: 'Jan 2022',
     end: 'Dec 2024',
@@ -79,18 +129,21 @@ export const experience = [
 export const projects = [
   {
     title: 'Hybrid GraphRAG agent',
+    icon: 'nodes',
     description:
       'Designed and deployed a **Hybrid GraphRAG agent** using **LangGraph,** LangSmith, Neo4j, and vision LLMs; extracted structured data from PDFs and implemented semantic-similarity chunking with ingestion progress tracking.',
     tags: ['LangGraph', 'LangSmith', 'Neo4j', 'Vision LLMs'],
   },
   {
     title: 'Domain-specific RAG agent',
+    icon: 'book',
     description:
       'Implemented a **domain-specific RAG agent** for question answering over research papers with prompt versioning, vector stores, semantic similarity, and LLM-as-a-judge evaluation.',
     tags: ['RAG', 'Vector stores', 'Prompt versioning', 'LLM-as-a-judge'],
   },
   {
     title: 'RAG chatbot · USC Hackathon',
+    icon: 'bot',
     description:
       'Prototyped a RAG-based chatbot for USC Hackathon using **LangChain,** LangSmith, and **MongoDB** Atlas Vector DB.',
     tags: ['LangChain', 'LangSmith', 'MongoDB Atlas'],
@@ -98,21 +151,25 @@ export const projects = [
 ];
 
 export const skills = [
-  { group: 'Programming', items: ['Python', 'Bash', 'SQL'], familiar: ['C++', 'JS/TS'] },
+  { group: 'Programming', icon: 'code', items: ['Python', 'Bash', 'SQL'], familiar: ['C++', 'JS/TS'] },
   {
     group: 'GenAI / AI Stack',
+    icon: 'bot',
     items: ['Agentic AI Workflows', 'Memory', 'Context Engineering', 'Guardrails', 'Observability', 'Evaluation'],
   },
   {
     group: 'ML & DL',
+    icon: 'nodes',
     items: ['PyTorch', 'Computer Vision', 'Tabular ML', 'XAI (SHAP)', 'Traditional ML (Scikit-learn, XGBoost, RF, etc.)'],
   },
   {
     group: 'Data Engineering',
+    icon: 'database',
     items: ['ETL Pipelines', 'Multiprocessing & Async Data Processing', 'Data Quality & Validation'],
   },
   {
     group: 'Cloud & MLOps',
+    icon: 'cloud',
     items: [
       'Azure',
       'Bicep (IaC)',
@@ -125,9 +182,10 @@ export const skills = [
   },
   {
     group: 'Dev Tools',
+    icon: 'terminal',
     items: ['Git/GitHub', 'MongoDB', 'Neo4j', 'Google ADK', 'LangChain LCEL', 'LangGraph', 'LangSmith', 'Arize', 'Flask'],
   },
-  { group: 'Soft Skills', items: ['High-Throughput Data Processing', 'Scientific Research', 'DOE (Design-Expert)'] },
+  { group: 'Soft Skills', icon: 'flask', items: ['High-Throughput Data Processing', 'Scientific Research', 'DOE (Design-Expert)'] },
 ];
 
 export const education = [
