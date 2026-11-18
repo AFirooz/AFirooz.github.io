@@ -1,0 +1,38 @@
+---
+// Decorative circuit traces echoing the AF logo. Each trace ends in a node.
+const traces = [
+  { d: 'M820 36 H690 L666 60 H520 L486 94 H350', node: [350, 94] },
+  { d: 'M820 92 H640 L596 136 H470', node: [470, 136] },
+  { d: 'M820 150 H700 L640 210 H548 L514 244', node: [514, 244] },
+  { d: 'M820 226 H730 L680 276 H590', node: [590, 276] },
+  { d: 'M820 300 H752 L700 352 H570 L536 386 H430', node: [430, 386] },
+  { d: 'M820 372 H772 L728 416 H636', node: [636, 416] },
+  { d: 'M820 448 H736 L684 500 H520', node: [520, 500] },
+  { d: 'M610 0 V40 L574 76 H440', node: [440, 76] },
+  { d: 'M420 0 V28 L388 60 H270', node: [270, 60] },
+  { d: 'M560 600 V548 L516 504 H400', node: [400, 504] },
+  { d: 'M710 600 V560 L668 518', node: [668, 518] },
+  { d: 'M820 520 H780 L744 556 H660', node: [660, 556] },
+];
+---
+
+<svg viewBox="0 0 820 600" preserveAspectRatio="xMaxYMin slice" aria-hidden="true" fill="none">
+  <defs>
+    <linearGradient id="circuit-grad" x1="0" y1="0" x2="820" y2="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="var(--g1)"></stop>
+      <stop offset="0.55" stop-color="var(--g2)"></stop>
+      <stop offset="1" stop-color="var(--g3)"></stop>
+    </linearGradient>
+  </defs>
+  <g stroke="url(#circuit-grad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    {
+      traces.map((t) => (
+        <>
+          <path d={t.d} />
+          <circle cx={t.node[0]} cy={t.node[1]} r="5" fill="var(--bg)" />
+          <circle cx={t.node[0]} cy={t.node[1]} r="1.5" fill="url(#circuit-grad)" stroke="none" />
+        </>
+      ))
+    }
+  </g>
+</svg>

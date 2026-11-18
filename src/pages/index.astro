@@ -1,0 +1,275 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Section from '../components/Section.astro';
+import Icon from '../components/Icon.astro';
+import CircuitArt from '../components/CircuitArt.astro';
+import logo from '../assets/af-logo.png';
+import portrait from '../assets/portrait.jpg';
+import {
+  profile,
+  summary,
+  stats,
+  experience,
+  projects,
+  skills,
+  education,
+  publications,
+  honors,
+  certificates,
+  leadership,
+} from '../data/resume';
+import { fmt } from '../lib/fmt';
+
+const nav = [
+  { href: '#experience', label: 'Experience' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#skills', label: 'Skills' },
+  { href: '#education', label: 'Education' },
+  { href: '#publications', label: 'Publications' },
+  { href: '#contact', label: 'Contact', keep: true },
+];
+const mailto = `mailto:${profile.email}`;
+const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
+---
+
+<Base>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="#top" aria-label={`${profile.name}, back to top`}>
+        <Image src={logo} alt="" height={52} loading="eager" />
+        <span>{profile.name}</span>
+      </a>
+      <nav class="nav" aria-label="Sections">
+        {nav.map((item) => <a href={item.href} class:list={{ 'nav-keep': item.keep }}>{item.label}</a>)}
+      </nav>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
+        <Icon name="sun" class="sun" />
+        <Icon name="moon" class="moon" />
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="hero" id="top">
+      <div class="hero-glow"></div>
+      <div class="hero-art"><CircuitArt /></div>
+      <div class="hero-grid wrap">
+        <div>
+          <p class="eyebrow mono">{profile.role} · {profile.focus}</p>
+          <h1>{profile.name}</h1>
+          <p class="hero-tagline" set:html={fmt(profile.tagline)} />
+          <div class="hero-actions">
+            <a class="btn btn-primary" href={mailto}><Icon name="mail" />Get in touch</a>
+            <a class="btn" href={profile.github} rel="me noopener"><Icon name="github" />GitHub</a>
+            <a class="btn" href={profile.linkedin} rel="me noopener"><Icon name="linkedin" />LinkedIn</a>
+            <button class="btn" type="button" data-print><Icon name="print" />Save as PDF</button>
+          </div>
+          <div class="hero-meta">
+            <span><Icon name="pin" />{profile.location}</span>
+            <span><i class="dot"></i>{profile.availability}</span>
+            <span>{profile.degrees}</span>
+          </div>
+          <p class="print-only hero-meta">
+            {profile.email} · {short(profile.site)} · {short(profile.github)} · {short(profile.linkedin)}
+          </p>
+        </div>
+        <div class="portrait">
+          <Image
+            src={portrait}
+            alt={`Portrait of ${profile.name}`}
+            width={600}
+            widths={[300, 600]}
+            sizes="(max-width: 760px) 128px, 300px"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <Section id="profile" index="01" title="Profile">
+        <div class="prose">
+          {summary.map((p) => <p set:html={fmt(p)} />)}
+        </div>
+        <ul class="stats">
+          {
+            stats.map((s) => (
+              <li class="stat">
+                <div class="stat-value grad-text">{s.value}</div>
+                <div class="stat-label">{s.label}</div>
+              </li>
+            ))
+          }
+        </ul>
+      </Section>
+
+      <Section id="experience" index="02" title="Experience">
+        <div class="timeline">
+          {
+            experience.map((job) => (
+              <article class="entry">
+                <div class="entry-top">
+                  <h3>{job.role}</h3>
+                  <span class="entry-dates mono">
+                    {job.start} – {job.end}
+                  </span>
+                </div>
+                <p class="entry-org">{job.company}</p>
+                <p class="entry-loc">{[job.location, job.note].filter(Boolean).join(' · ')}</p>
+                <ul class="bullets">
+                  {job.bullets.map((b) => <li set:html={fmt(b)} />)}
+                </ul>
+                <ul class="tags" aria-label="Technologies">
+                  {job.tags.map((t) => <li class="tag">{t}</li>)}
+                </ul>
+              </article>
+            ))
+          }
+        </div>
+      </Section>
+
+      <Section id="projects" index="03" title="Selected projects">
+        <div class="cards">
+          {
+            projects.map((p) => (
+              <article class="card">
+                <h3>{p.title}</h3>
+                <p set:html={fmt(p.description)} />
+                <ul class="tags" aria-label="Technologies">
+                  {p.tags.map((t) => <li class="tag">{t}</li>)}
+                </ul>
+              </article>
+            ))
+          }
+        </div>
+      </Section>
+
+      <Section id="skills" index="04" title="Skills">
+        <dl class="skills">
+          {
+            skills.map((s) => (
+              <div class="skill-row">
+                <dt>{s.group}</dt>
+                <dd>
+                  <ul class="tags">
+                    {s.items.map((i) => <li class="tag">{i}</li>)}
+                    {s.familiar && <li class="familiar-label">Familiar:</li>}
+                    {s.familiar?.map((i) => <li class="tag is-familiar">{i}</li>)}
+                  </ul>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
+      </Section>
+
+      <Section id="education" index="05" title="Education">
+        <div class="timeline">
+          {
+            education.map((e) => (
+              <article class="entry">
+                <div class="entry-top">
+                  <h3>{e.degree}</h3>
+                  <span class="entry-dates mono">
+                    {e.start} – {e.end}
+                  </span>
+                </div>
+                <p class="entry-org">{e.school}</p>
+                <p class="entry-loc">{e.location}</p>
+                {e.details.length > 0 && <ul class="bullets">{e.details.map((d) => <li>{d}</li>)}</ul>}
+              </article>
+            ))
+          }
+        </div>
+      </Section>
+
+      <Section id="publications" index="06" title="Publications">
+        <ol class="pubs">
+          {
+            publications.map((p) => (
+              <li class="pub">
+                <p class="pub-title">{p.title}</p>
+                <p class="pub-meta">
+                  <span set:html={fmt(p.authors)} /> <em>{p.venue}</em>, {p.year}.
+                </p>
+                {p.url && (
+                  <a class="pub-doi link mono" href={p.url} rel="noopener">
+                    {short(p.url)}
+                  </a>
+                )}
+              </li>
+            ))
+          }
+        </ol>
+      </Section>
+
+      <Section id="recognition" index="07" title="Honors & certificates">
+        <h3 class="subhead">Honors & awards</h3>
+        <ul class="rows">
+          {
+            honors.map((h) => (
+              <li>
+                <span class="row-title">{h.title}</span>
+                <span class="row-sub">{h.issuer}</span>
+                <span class="row-year mono">{h.year}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <h3 class="subhead">Certificates</h3>
+        <ul class="rows">
+          {
+            certificates.map((c) => (
+              <li>
+                <span class="row-title">
+                  <a href={c.url} rel="noopener" title="Verify certificate">
+                    {c.title}
+                    <Icon name="arrow" />
+                  </a>
+                </span>
+                <span class="row-sub">{c.issuer}</span>
+                <span class="row-year mono">{c.year}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </Section>
+
+      <Section id="leadership" index="08" title="Leadership & volunteering">
+        <ul class="rows">
+          {
+            leadership.map((l) => (
+              <li>
+                <span class="row-text" set:html={fmt(l.text)} />
+                <span class="row-year mono">{l.year}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </Section>
+
+      <section id="contact" class="contact reveal" aria-labelledby="contact-title">
+        <h2 id="contact-title">Let’s <span class="grad-text">talk.</span></h2>
+        <p>
+          Email is the fastest way to reach me. I’m based in {profile.location} and {
+            profile.availability.toLowerCase()
+          }.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href={mailto}><Icon name="mail" />{profile.email}</a>
+          <a class="btn" href={profile.linkedin} rel="me noopener"><Icon name="linkedin" />LinkedIn</a>
+          <a class="btn" href={profile.github} rel="me noopener"><Icon name="github" />GitHub</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© {new Date().getFullYear()} {profile.name}</span>
+      <a href={profile.repo} rel="noopener">Source on GitHub</a>
+    </div>
+  </footer>
+</Base>

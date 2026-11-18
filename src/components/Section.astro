@@ -1,0 +1,19 @@
+---
+interface Props {
+  id: string;
+  index: string;
+  title: string;
+}
+
+const { id, index, title } = Astro.props;
+---
+
+<section id={id} class="section reveal" aria-labelledby={`${id}-title`}>
+  <header class="section-head">
+    <span class="idx">{index}</span>
+    <h2 id={`${id}-title`}>{title}</h2>
+  </header>
+  <div class="section-body">
+    <slot />
+  </div>
+</section>
