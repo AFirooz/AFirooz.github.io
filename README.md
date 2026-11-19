@@ -56,7 +56,7 @@ pnpm preview   # serve dist/
 
 ## Deploy
 
-`.github/workflows/deploy.yml` builds and publishes to GitHub Pages on every push to `master`.
+`.github/workflows/deploy.yml` builds and publishes to GitHub Pages on every push to `main`.
 The repository's Pages source must be set to **GitHub Actions** (Settings → Pages → Build and deployment → Source).
 
 ## Features
