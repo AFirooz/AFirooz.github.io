@@ -89,6 +89,7 @@ if (panel && out && form && input) {
         print(plain(profile.tagline));
         summary.forEach(item);
         dim(`${profile.location} · ${profile.availability} · ${profile.degrees}`);
+        dim(profile.motto.join(' · '));
       },
     },
     experience: {

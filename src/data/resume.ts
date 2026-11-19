@@ -6,6 +6,7 @@ export const profile = {
   name: 'Ali Firooz',
   role: 'Software Engineer',
   focus: 'AI & Cloud Infra',
+  motto: ['Code Curiously', 'Create Tomorrow'],
   degrees: 'Computer Science, MS · Chemical Engineering, MS',
   // Rotating words after "I build" in the hero. Keep each under ~23 characters.
   builds: [

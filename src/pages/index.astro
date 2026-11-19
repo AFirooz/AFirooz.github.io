@@ -86,6 +86,7 @@ const headline = `Hi, I'm ${profile.name}. I build ${profile.builds.join(', ')}.
             <p class="print-name">{profile.name}</p>
             <p class="print-role">{profile.role} · {profile.focus}</p>
           </div>
+          <p class="motto">{profile.motto.join(' · ')}</p>
           <h1 aria-label={headline}>
             <span class="hello" aria-hidden="true">Hi, I’m <strong>{profile.name}</strong>.</span>
             <span class="headline" aria-hidden="true">
@@ -360,7 +361,7 @@ const headline = `Hi, I'm ${profile.name}. I build ${profile.builds.join(', ')}.
 
   <footer class="site-footer">
     <div class="wrap">
-      <span>© {new Date().getFullYear()} {profile.name}</span>
+      <span>© {new Date().getFullYear()} {profile.name} · <span class="mono">{profile.motto.join(' · ')}</span></span>
       <a href={profile.repo} rel="noopener">Source on GitHub</a>
     </div>
   </footer>

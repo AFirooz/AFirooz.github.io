@@ -49,4 +49,4 @@ The repository's Pages source must be set to **GitHub Actions** (Settings → Pa
 ## Profile picture
 
 `src/assets/avatar.png` is `src/assets/portrait.jpg` with the background removed (macOS Vision subject mask) and
-replaced by the logo gradient. To use a different photo, replace `avatar.png` with any square image.
+replaced by a charcoal backdrop with blue and copper glows, matching the LinkedIn banner. To use a different photo, replace `avatar.png` with any square image.
