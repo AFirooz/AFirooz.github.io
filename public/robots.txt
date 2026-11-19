@@ -2,3 +2,6 @@ User-agent: *
 Allow: /
 
 Sitemap: https://afirooz.github.io/sitemap.xml
+
+# Markdown version of this site for LLMs and agents:
+# https://afirooz.github.io/llms.txt

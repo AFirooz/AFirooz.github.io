@@ -1,6 +1,7 @@
 /* ---------- Tokens ---------- */
 :root {
-  color-scheme: light dark;
+  /* The site is dark only. In light-dark(), the first value is what the print stylesheet uses on paper. */
+  color-scheme: dark;
 
   /* Charcoal, steel blue and copper, taken from the AF banner artwork */
   --bg: light-dark(#f4f4f1, #0e0f12);
@@ -14,7 +15,7 @@
   --g2: light-dark(#5d6676, #cbd2dc);
   --g3: light-dark(#b05a34, #dc9872);
   --grad: linear-gradient(100deg, var(--g1), var(--g2) 50%, var(--g3));
-  /* Same gradient, dark enough for white text in both themes */
+  /* Same gradient, dark enough for white text on screen and on paper */
   --grad-solid: linear-gradient(135deg, #2456c4, #5d6676 55%, #b05a34);
 
   --font-sans: 'Geist Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -23,12 +24,6 @@
   --wrap: 1040px;
   --gutter: clamp(20px, 5vw, 40px);
   --header-h: 60px;
-}
-:root[data-theme='light'] {
-  color-scheme: light;
-}
-:root[data-theme='dark'] {
-  color-scheme: dark;
 }
 @property --angle {
   syntax: '<angle>';
@@ -181,14 +176,6 @@ kbd {
   /* The logo file is cyan/magenta; render it as brushed metal like the banner. */
   filter: grayscale(1) brightness(1.75) contrast(1.1);
 }
-:root[data-theme='light'] .brand img {
-  filter: grayscale(1) brightness(0.6) contrast(1.1);
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) .brand img {
-    filter: grayscale(1) brightness(0.6) contrast(1.1);
-  }
-}
 .nav {
   display: flex;
   gap: 2px;
@@ -240,13 +227,6 @@ kbd {
 .header-btn kbd {
   border: 0;
   padding: 0;
-}
-.header-btn .moon,
-:root[data-theme='dark'] .header-btn .sun {
-  display: none;
-}
-:root[data-theme='dark'] .header-btn .moon {
-  display: block;
 }
 .progress {
   position: absolute;
@@ -529,46 +509,6 @@ kbd {
 .hero-meta svg {
   width: 15px;
   height: 15px;
-}
-
-.marquee {
-  margin-top: clamp(48px, 7vw, 84px);
-  padding-block: 15px;
-  border-block: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface) 45%, transparent);
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-}
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee 48s linear infinite;
-}
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-.marquee-track li {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-  padding-left: 26px;
-  font-family: var(--font-mono);
-  font-size: 0.84rem;
-  color: var(--muted);
-  white-space: nowrap;
-}
-.marquee-track li::after {
-  content: '';
-  width: 5px;
-  height: 5px;
-  rotate: 45deg;
-  background: var(--grad);
-}
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
-  }
 }
 
 /* ---------- Sections ---------- */
@@ -1185,8 +1125,6 @@ html:not(.js) [data-term-open] {
   display: none;
 }
 .term {
-  /* Always dark, whatever the page theme: light-dark() resolves against this. */
-  color-scheme: dark;
   position: fixed;
   right: 20px;
   bottom: 20px;
@@ -1794,16 +1732,6 @@ html:not(.js) [data-term-open] {
   .pulse {
     display: none;
   }
-  .marquee-track {
-    animation: none;
-    width: auto;
-    flex-wrap: wrap;
-    justify-content: center;
-    row-gap: 8px;
-  }
-  .marquee-track li[aria-hidden] {
-    display: none;
-  }
 }
 
 /* ---------- Responsive ---------- */
@@ -1914,8 +1842,7 @@ html:not(.js) [data-term-open] {
   .hero-dots,
   .hero-glow,
   .hero-art,
-  .avatar-ring,
-  .marquee,
+  .avatar,
   .actions,
   .now,
   .hero h1,
@@ -1964,16 +1891,7 @@ html:not(.js) [data-term-open] {
     padding-top: 0;
   }
   .hero-inner {
-    grid-template-columns: minmax(0, 1fr) 76pt;
-    gap: 18pt;
-    align-items: start;
-  }
-  .avatar {
-    order: 2;
-    width: 76pt;
-  }
-  .avatar img {
-    border: 0;
+    grid-template-columns: minmax(0, 1fr);
   }
   .print-name {
     font-size: 26pt;

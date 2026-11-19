@@ -40,29 +40,6 @@ export const stats = [
   { num: 60, decimals: 0, suffix: '+', label: 'defects auto-resolved by SCA/SAST pull request checks' },
 ];
 
-// Scrolling strip under the hero. Every entry also appears in `skills` below.
-export const stack = [
-  'Python',
-  'PyTorch',
-  'LangGraph',
-  'LangChain',
-  'Azure',
-  'OpenTelemetry',
-  'Docker',
-  'GitHub Actions',
-  'Neo4j',
-  'MongoDB',
-  'SQL',
-  'Scikit-learn',
-  'XGBoost',
-  'Bicep',
-  'LangSmith',
-  'Google ADK',
-  'SHAP',
-  'Flask',
-  'Bash',
-];
-
 export const experience = [
   {
     company: 'Just in Time GCP',

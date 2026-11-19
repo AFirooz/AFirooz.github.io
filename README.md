@@ -64,7 +64,7 @@ The repository's Pages source must be set to **GitHub Actions** (Settings → Pa
 - Hero with a typed "I build ..." rotator, animated circuit traces, and a scrolling tech strip
 - Resume terminal (button bottom right, or Cmd/Ctrl+K): named commands plus keyword search over the resume, all client-side (`src/scripts/terminal.ts`)
 - Count-up stats, scroll progress bar, active-section nav, cursor spotlight on cards, tabs, copy-email button (`src/scripts/site.ts`)
-- Light and dark themes (follows the system, toggle remembers the choice)
+- Dark only on screen; the print stylesheet switches to light for paper
 - Print stylesheet: the "Save as PDF" button prints the page as a paper resume
 - Everything animated respects `prefers-reduced-motion`, and the page reads fine with JavaScript off
 - Markdown blog with drafts, syntax highlighting, copy buttons, an "On this page" list and an RSS feed

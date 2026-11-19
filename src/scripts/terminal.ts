@@ -12,7 +12,6 @@ import {
   leadership,
 } from '../data/resume';
 import { plain } from '../lib/fmt';
-import { toggleTheme, setTheme } from './theme';
 
 const panel = document.querySelector<HTMLElement>('#terminal');
 const out = panel?.querySelector<HTMLElement>('[data-term-out]');
@@ -204,14 +203,6 @@ if (panel && out && form && input) {
         setTimeout(() => window.print(), 300);
       },
     },
-    theme: {
-      desc: 'toggle light / dark (theme dark|light)',
-      run([mode]) {
-        if (mode === 'dark' || mode === 'light') setTheme(mode);
-        else mode = toggleTheme();
-        print(`Theme set to ${mode}.`, 't-ok');
-      },
-    },
     clear: {
       desc: 'clear the screen',
       run() {
@@ -298,9 +289,10 @@ if (panel && out && form && input) {
     echo.append(prompt, text);
 
     const [word, ...args] = text.toLowerCase().split(/\s+/);
-    const name = aliases[word] ?? word;
+    // Own keys only, so words like "constructor" are searched instead of hitting Object.prototype.
+    const name = Object.hasOwn(aliases, word) ? aliases[word] : word;
     if (word === 'sudo') print('visitor is not in the sudoers file. Nice try.', 't-err');
-    else if (name in commands) commands[name].run(args);
+    else if (Object.hasOwn(commands, name)) commands[name].run(args);
     else search(text);
 
     requestAnimationFrame(() => echo.scrollIntoView({ block: 'start', behavior: 'smooth' }));

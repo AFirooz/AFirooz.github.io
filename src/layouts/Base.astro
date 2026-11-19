@@ -50,12 +50,14 @@ const jsonLd = Astro.props.jsonLd ?? {
     <meta name="description" content={description} />
     <meta name="author" content={profile.name} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#0e0f12" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f4f4f1" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0f12" />
+    <meta name="color-scheme" content="dark" />
 
     <link rel="alternate" type="application/rss+xml" title={`${profile.name} · Blog`} href="/rss.xml" />
+    <link rel="alternate" type="text/markdown" title={`${profile.name} · Resume as Markdown`} href="/llms.txt" />
 
     <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
@@ -64,20 +66,12 @@ const jsonLd = Astro.props.jsonLd ?? {
     <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+    <!-- "<" is escaped so a post title can never close the script tag. -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd).replace(/</g, '\\u003c')} />
 
-    <!-- Runs before paint so the saved theme never flashes. -->
+    <!-- Runs before paint so script-only styles never flash. -->
     <script is:inline>
-      (() => {
-        const root = document.documentElement;
-        root.classList.add('js');
-        let saved = null;
-        try {
-          saved = localStorage.getItem('theme');
-        } catch {}
-        const theme = saved ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        root.dataset.theme = theme;
-      })();
+      document.documentElement.classList.add('js');
     </script>
   </head>
   <body>

@@ -50,7 +50,7 @@ Paragraphs are plain text. You get **bold**, _italic_, `inline code`, ~~striketh
 
 ## Code
 
-Fenced code blocks are highlighted at build time, follow the light or dark theme, and get a copy button.
+Fenced code blocks are highlighted at build time and get a copy button.
 
 ```python
 from pathlib import Path

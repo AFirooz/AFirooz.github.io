@@ -1,13 +1,11 @@
 // Page behaviour. Everything here is progressive: the page reads fine without it.
-import { toggleTheme } from './theme';
 
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $$ = <T extends Element = HTMLElement>(sel: string, scope: ParentNode = document) => [
   ...scope.querySelectorAll<T>(sel),
 ];
 
-/* Theme + print */
-$$('[data-theme-toggle]').forEach((el) => el.addEventListener('click', toggleTheme));
+/* Print */
 $$('[data-print]').forEach((el) => el.addEventListener('click', () => window.print()));
 
 /* Reveal on scroll */
