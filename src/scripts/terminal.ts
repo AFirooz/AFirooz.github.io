@@ -19,6 +19,9 @@ const out = panel?.querySelector<HTMLElement>('[data-term-out]');
 const form = panel?.querySelector<HTMLFormElement>('[data-term-form]');
 const input = panel?.querySelector<HTMLInputElement>('input');
 
+type PostInfo = { title: string; description: string; date: string; url: string };
+const posts: PostInfo[] = JSON.parse(document.getElementById('term-posts')?.textContent || '[]');
+
 if (panel && out && form && input) {
   const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
   document.querySelectorAll('[data-term-kbd]').forEach((el) => (el.textContent = isMac ? '⌘K' : 'Ctrl K'));
@@ -41,7 +44,10 @@ if (panel && out && form && input) {
     const a = document.createElement('a');
     a.href = href;
     a.textContent = label;
-    if (/^https?:/.test(href)) a.rel = 'noopener';
+    if (/^https?:/.test(href) && a.host !== location.host) {
+      a.target = '_blank';
+      a.rel = 'noopener';
+    }
     line('t-link').append('→ ', a);
   }
   /** Print text with the matched terms wrapped in <mark>. */
@@ -59,7 +65,9 @@ if (panel && out && form && input) {
       }
     }
   }
-  const jump = (id: string, label: string) => link(`jump to ${label}`, `#${id}`);
+  // Resume sections live on the home page; from anywhere else the link has to go there first.
+  const onHome = location.pathname === '/';
+  const jump = (id: string, label: string) => link(`jump to ${label}`, `${onHome ? '' : '/'}#${id}`);
 
   /* ---------- commands ---------- */
   type Command = { desc: string; run: (args: string[]) => void };
@@ -159,6 +167,17 @@ if (panel && out && form && input) {
         leadership.forEach((l) => item(`${l.text} (${l.year})`));
       },
     },
+    blog: {
+      desc: 'latest posts',
+      run() {
+        if (!posts.length) return dim('Nothing published yet.');
+        for (const post of posts) {
+          head(post.title);
+          dim(`${post.date} · ${post.description}`);
+          link('read', post.url);
+        }
+      },
+    },
     contact: {
       desc: 'how to reach Ali',
       run() {
@@ -209,6 +228,8 @@ if (panel && out && form && input) {
     work: 'experience',
     jobs: 'experience',
     stack: 'skills',
+    posts: 'blog',
+    writing: 'blog',
     papers: 'publications',
     pubs: 'publications',
     certs: 'awards',
@@ -234,6 +255,7 @@ if (panel && out && form && input) {
     ...honors.map((h) => ({ where: 'Honor', text: `${h.title}, ${h.issuer} (${h.year})` })),
     ...certificates.map((c) => ({ where: 'Certificate', text: `${c.title}, ${c.issuer} (${c.year})` })),
     ...leadership.map((l) => ({ where: 'Leadership', text: plain(l.text) })),
+    ...posts.map((p) => ({ where: `Blog · ${p.date}`, text: `${p.title}. ${p.description}` })),
   ];
   const stopwords = new Set(
     'a an and are about any can did do does for has have he his how i in is it know me of on or tell the to used using was what when where which who with you your ali experience worked work'.split(
@@ -342,7 +364,7 @@ if (panel && out && form && input) {
   // Following a "jump to" link on a phone should reveal the page behind the sheet.
   out.addEventListener('click', (e) => {
     const a = (e.target as HTMLElement).closest('a');
-    if (a?.getAttribute('href')?.startsWith('#') && matchMedia('(max-width: 760px)').matches) close();
+    if (a?.getAttribute('href')?.includes('#') && matchMedia('(max-width: 760px)').matches) close();
   });
   addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {

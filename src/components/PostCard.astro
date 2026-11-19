@@ -1,0 +1,32 @@
+---
+import { type Post, postUrl, readingTime, formatDate } from '../lib/posts';
+
+interface Props {
+  post: Post;
+  // Heading level for the title, so the card fits the outline of the page it is on.
+  heading?: 'h2' | 'h3';
+}
+
+const { post, heading: Heading = 'h3' } = Astro.props;
+const { title, description, date, tags, draft } = post.data;
+---
+
+<article class="card post-card spot reveal">
+  <p class="post-meta mono">
+    <time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time>
+    <span aria-hidden="true">·</span>
+    <span>{readingTime(post)}</span>
+    {draft && <span class="badge draft">Draft</span>}
+  </p>
+  <Heading class="post-card-title"><a href={postUrl(post)}>{title}</a></Heading>
+  <p class="post-card-desc">{description}</p>
+  {
+    tags.length > 0 && (
+      <ul class="tags" aria-label="Tags">
+        {tags.map((t) => (
+          <li class="tag">{t}</li>
+        ))}
+      </ul>
+    )
+  }
+</article>

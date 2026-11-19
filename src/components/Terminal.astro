@@ -1,7 +1,16 @@
 ---
 import Icon from './Icon.astro';
+import { getPosts, postUrl, formatDate } from '../lib/posts';
 
 const chips = ['help', 'about', 'experience', 'skills', 'projects', 'contact'];
+const posts = (await getPosts()).map((post) => ({
+  title: post.data.title,
+  description: post.data.description,
+  date: formatDate(post.data.date),
+  url: postUrl(post),
+}));
+// "<" is escaped so post text can never close the script tag.
+const postsJson = JSON.stringify(posts).replace(/</g, '\\u003c');
 ---
 
 <button class="term-fab" type="button" data-term-open aria-haspopup="dialog" aria-controls="terminal">
@@ -39,6 +48,8 @@ const chips = ['help', 'about', 'experience', 'skills', 'projects', 'contact'];
     />
   </form>
 </div>
+
+<script type="application/json" id="term-posts" is:inline set:html={postsJson} />
 
 <script>
   import '../scripts/terminal';

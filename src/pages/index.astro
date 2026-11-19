@@ -4,8 +4,7 @@ import Base from '../layouts/Base.astro';
 import Section from '../components/Section.astro';
 import Icon from '../components/Icon.astro';
 import CircuitArt from '../components/CircuitArt.astro';
-import Terminal from '../components/Terminal.astro';
-import logo from '../assets/af-logo.png';
+import PostCard from '../components/PostCard.astro';
 import avatar from '../assets/avatar.png';
 import {
   profile,
@@ -22,44 +21,16 @@ import {
   leadership,
 } from '../data/resume';
 import { fmt } from '../lib/fmt';
+import { getPosts } from '../lib/posts';
 
-const nav = [
-  { href: '#about', label: 'About' },
-  { href: '#experience', label: 'Experience' },
-  { href: '#projects', label: 'Projects' },
-  { href: '#skills', label: 'Skills' },
-  { href: '#education', label: 'Education' },
-  { href: '#publications', label: 'Publications' },
-  { href: '#contact', label: 'Contact' },
-];
 const mailto = `mailto:${profile.email}`;
 const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '');
 const current = experience[0];
+const latestPosts = (await getPosts()).slice(0, 3);
 const headline = `Hi, I'm ${profile.name}. I build ${profile.builds.join(', ')}.`;
 ---
 
 <Base>
-  <header class="site-header">
-    <div class="wrap">
-      <a class="brand" href="#top" aria-label={`${profile.name}, back to top`}>
-        <Image src={logo} alt="" height={52} loading="eager" />
-        <span>{profile.name}</span>
-      </a>
-      <nav class="nav" aria-label="Sections">
-        {nav.map((item) => <a href={item.href}>{item.label}</a>)}
-      </nav>
-      <button class="header-btn term-trigger" type="button" data-term-open aria-label="Open the resume terminal">
-        <Icon name="terminal" />
-        <kbd data-term-kbd>⌘K</kbd>
-      </button>
-      <button class="header-btn" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
-        <Icon name="sun" class="sun" />
-        <Icon name="moon" class="moon" />
-      </button>
-    </div>
-    <div class="progress" data-progress aria-hidden="true"></div>
-  </header>
-
   <main id="main">
     <div class="hero" id="top">
       <div class="hero-dots"></div>
@@ -103,8 +74,8 @@ const headline = `Hi, I'm ${profile.name}. I build ${profile.builds.join(', ')}.
           </a>
           <div class="actions">
             <a class="btn btn-primary" href={mailto}><Icon name="mail" />Get in touch</a>
-            <a class="btn" href={profile.github} rel="me noopener"><Icon name="github" />GitHub</a>
-            <a class="btn" href={profile.linkedin} rel="me noopener"><Icon name="linkedin" />LinkedIn</a>
+            <a class="btn" href={profile.github} target="_blank" rel="me noopener"><Icon name="github" />GitHub</a>
+            <a class="btn" href={profile.linkedin} target="_blank" rel="me noopener"><Icon name="linkedin" />LinkedIn</a>
             <button class="btn" type="button" data-print><Icon name="print" />Save as PDF</button>
           </div>
           <div class="hero-meta">
@@ -214,6 +185,23 @@ const headline = `Hi, I'm ${profile.name}. I build ${profile.builds.join(', ')}.
         </div>
       </Section>
 
+      {
+        latestPosts.length > 0 && (
+          <Section id="writing" icon="pen" title="Writing">
+            <div class="cards">
+              {latestPosts.map((post) => (
+                <PostCard post={post} />
+              ))}
+            </div>
+            <p class="more reveal">
+              <a class="link" href="/blog/">
+                All posts →
+              </a>
+            </p>
+          </Section>
+        )
+      }
+
       <Section id="skills" icon="cpu" title="Skills">
         <div class="skill-grid">
           {
@@ -264,7 +252,7 @@ const headline = `Hi, I'm ${profile.name}. I build ${profile.builds.join(', ')}.
                   <span set:html={fmt(p.authors)} /> <em>{p.venue}</em>, {p.year}.
                 </p>
                 {p.url && (
-                  <a class="pub-doi link mono" href={p.url} rel="noopener">
+                  <a class="pub-doi link mono" href={p.url} target="_blank" rel="noopener">
                     {short(p.url)}
                   </a>
                 )}
@@ -295,7 +283,7 @@ const headline = `Hi, I'm ${profile.name}. I build ${profile.builds.join(', ')}.
                 certificates.map((c) => (
                   <li>
                     <span class="row-title">
-                      <a href={c.url} rel="noopener" title="Verify certificate">
+                      <a href={c.url} target="_blank" rel="noopener" title="Verify certificate">
                         {c.title}
                         <Icon name="arrow" />
                       </a>
@@ -352,19 +340,10 @@ const headline = `Hi, I'm ${profile.name}. I build ${profile.builds.join(', ')}.
             <Icon name="copy" class="i-copy" /><Icon name="check" class="i-check" />
             <span data-copy-label>Copy email</span>
           </button>
-          <a class="btn" href={profile.linkedin} rel="me noopener"><Icon name="linkedin" />LinkedIn</a>
-          <a class="btn" href={profile.github} rel="me noopener"><Icon name="github" />GitHub</a>
+          <a class="btn" href={profile.linkedin} target="_blank" rel="me noopener"><Icon name="linkedin" />LinkedIn</a>
+          <a class="btn" href={profile.github} target="_blank" rel="me noopener"><Icon name="github" />GitHub</a>
         </div>
       </section>
     </div>
   </main>
-
-  <footer class="site-footer">
-    <div class="wrap">
-      <span>© {new Date().getFullYear()} {profile.name} · <span class="mono">{profile.motto.join(' · ')}</span></span>
-      <a href={profile.repo} rel="noopener">Source on GitHub</a>
-    </div>
-  </footer>
-
-  <Terminal />
 </Base>

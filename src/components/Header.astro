@@ -1,0 +1,46 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import logo from '../assets/af-logo.png';
+import { profile } from '../data/resume';
+import { getPosts } from '../lib/posts';
+
+const path = Astro.url.pathname;
+const home = path === '/';
+const inBlog = path.startsWith('/blog');
+const hasPosts = (await getPosts()).length > 0;
+
+// Section links are in-page anchors on the home page and full links elsewhere.
+const section = (id: string) => `${home ? '' : '/'}#${id}`;
+const nav = [
+  { href: section('about'), label: 'About' },
+  { href: section('experience'), label: 'Experience' },
+  { href: section('projects'), label: 'Projects' },
+  { href: section('skills'), label: 'Skills' },
+  { href: section('education'), label: 'Education' },
+  { href: section('publications'), label: 'Publications' },
+  ...(hasPosts ? [{ href: '/blog/', label: 'Blog', current: inBlog }] : []),
+  { href: section('contact'), label: 'Contact' },
+];
+---
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href={home ? '#top' : '/'} aria-label={home ? `${profile.name}, back to top` : `${profile.name}, home`}>
+      <Image src={logo} alt="" height={52} loading="eager" />
+      <span>{profile.name}</span>
+    </a>
+    <nav class="nav" aria-label="Site">
+      {nav.map((item) => <a href={item.href} aria-current={item.current ? 'page' : undefined}>{item.label}</a>)}
+    </nav>
+    <button class="header-btn term-trigger" type="button" data-term-open aria-label="Open the resume terminal">
+      <Icon name="terminal" />
+      <kbd data-term-kbd>⌘K</kbd>
+    </button>
+    <button class="header-btn" type="button" data-theme-toggle aria-label="Switch between light and dark theme">
+      <Icon name="sun" class="sun" />
+      <Icon name="moon" class="moon" />
+    </button>
+  </div>
+  <div class="progress" data-progress aria-hidden="true"></div>
+</header>

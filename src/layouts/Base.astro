@@ -4,21 +4,28 @@ import '@fontsource-variable/geist-mono';
 import '../styles/global.css';
 import { profile, experience, education, skills } from '../data/resume';
 import { plain } from '../lib/fmt';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Terminal from '../components/Terminal.astro';
 
 interface Props {
   title?: string;
   description?: string;
+  ogType?: 'profile' | 'website' | 'article';
+  // Structured data for the page. Defaults to the Person record.
+  jsonLd?: Record<string, unknown>;
 }
 
 const {
   title = `${profile.name} · ${profile.role}, ${profile.focus}`,
   description = plain(profile.tagline),
+  ogType = 'profile',
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL('/og.png', Astro.site);
 
-const jsonLd = {
+const jsonLd = Astro.props.jsonLd ?? {
   '@context': 'https://schema.org',
   '@type': 'Person',
   name: profile.name,
@@ -48,7 +55,9 @@ const jsonLd = {
     <meta name="theme-color" content="#0e0f12" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#f4f4f1" media="(prefers-color-scheme: light)" />
 
-    <meta property="og:type" content="profile" />
+    <link rel="alternate" type="application/rss+xml" title={`${profile.name} · Blog`} href="/rss.xml" />
+
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -73,7 +82,10 @@ const jsonLd = {
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
+    <Header />
     <slot />
+    <Footer />
+    <Terminal />
 
     <script>
       import '../scripts/site';

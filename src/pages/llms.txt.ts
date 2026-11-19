@@ -13,10 +13,12 @@ import {
   leadership,
 } from '../data/resume';
 import { plain } from '../lib/fmt';
+import { getPosts, postUrl } from '../lib/posts';
 
 const list = (items: string[]) => items.map((i) => `- ${plain(i)}`).join('\n');
 
-export const GET: APIRoute = () => {
+export const GET: APIRoute = async ({ site }) => {
+  const posts = await getPosts();
   const body = [
     `# ${profile.name}`,
     `> ${profile.role} (${profile.focus}). ${plain(profile.tagline)}`,
@@ -42,6 +44,13 @@ export const GET: APIRoute = () => {
     `## Honors & awards\n${list(honors.map((h) => `${h.title}, ${h.issuer} (${h.year})`))}`,
     `## Certificates\n${list(certificates.map((c) => `${c.title}, ${c.issuer} (${c.year}): ${c.url}`))}`,
     `## Leadership & volunteering\n${list(leadership.map((l) => `${l.text} (${l.year})`))}`,
+    ...(posts.length
+      ? [
+          `## Blog\n${list(
+            posts.map((p) => `[${p.data.title}](${new URL(postUrl(p), site).href}): ${p.data.description}`),
+          )}`,
+        ]
+      : []),
   ].join('\n\n');
 
   return new Response(`${body}\n`, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
